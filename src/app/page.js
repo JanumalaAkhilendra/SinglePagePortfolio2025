@@ -1,6 +1,6 @@
 // Home.js (WITH EXPERIENCE TIMELINE)
 'use client';
-
+import Image from "next/image";
 import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ChevronDown, Mail, MapPin, ExternalLink, Calendar, Rocket, Satellite, Cpu } from "lucide-react";
@@ -252,7 +252,7 @@ export default function Home() {
                 <SpaceButton
                   key={link.label}
                   label={isMobile ? link.icon : link.label}
-                  imgsrc="/spacebuttoncircle.jpg"
+                  ImageSrc="/spacebuttoncircle.jpg"
                   href={link.href}
                   className={isMobile ? "text-xs px-2 py-1" : ""}
                 />
@@ -462,7 +462,7 @@ export default function Home() {
                 Initiate Contact
               </h2>
               <p className="text-sm lg:text-xl text-white/80 max-w-2xl mx-auto">
-                Ready to launch your next project into orbit? Let's connect and create something extraordinary.
+                Ready to launch your next project into orbit? Let&apos;s connect and create something extraordinary.
               </p>
             </div>
 
@@ -568,7 +568,7 @@ export default function Home() {
         rel="noreferrer"
         className="fixed bottom-4 right-4 z-50 transform hover:scale-110 transition-transform duration-300"
       >
-        <img
+        <Image
           src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
           alt="Buy Me A Coffee"
           className={`${isMobile ? 'h-8' : 'h-12'} w-auto drop-shadow-lg`}

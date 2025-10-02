@@ -1,6 +1,7 @@
 import React from "react";
 import ItemLayout from "./ItemLayout";
 import Link from "next/link";
+import Image from "next/image";
 
 const AboutDetails = () => {
   return (
@@ -39,7 +40,7 @@ const AboutDetails = () => {
         <ItemLayout
           className={"col-span-full sm:col-span-6 md:col-span-4 !p-0"}
         >
-          <img
+          <Image
             className="w-full h-auto"
             src={`${process.env.NEXT_PUBLIC_GITHUB_STATS_URL}/api/top-langs?username=JanumalaAkhilendra&theme=transparent&hide_border=true&title_color=FEFE5B&text_color=FFFFFF&icon_color=FEFE5B&text_bold=false`}
             alt="JanumalaAkhilendra"
@@ -48,7 +49,7 @@ const AboutDetails = () => {
         </ItemLayout>
 
         <ItemLayout className={"col-span-full md:col-span-8 !p-0"}>
-          <img
+          <Image
             className="w-full h-auto"
             src={`${process.env.NEXT_PUBLIC_GITHUB_STATS_URL}/api?username=JanumalaAkhilendra&theme=transparent&hide_border=true&title_color=FEFE5B&text_color=FFFFFF&icon_color=FEFE5B&text_bold=false`}
             alt="JanumalaAkhilendra"
@@ -57,7 +58,7 @@ const AboutDetails = () => {
         </ItemLayout>
 
         <ItemLayout className={"col-span-full"}>
-          <img
+          <Image
             className="w-full h-auto"
             src={`https://skillicons.dev/icons?i=appwrite,aws,babel,bootstrap,cloudflare,css,d3,docker,figma,firebase,gatsby,git,github,graphql,html,ipfs,js,jquery,kubernetes,linux,mongodb,mysql,netlify,nextjs,nodejs,npm,postgres,react,redux,replit,sass,supabase,tailwind,threejs,vercel,vite,vscode,yarn`}
             alt="JanumalaAkhilendra"
@@ -66,7 +67,7 @@ const AboutDetails = () => {
         </ItemLayout>
         
         <ItemLayout className={"col-span-full md:col-span-6 !p-0"}>
-          <img
+          <Image
             className="w-full h-auto"
             src={`${process.env.NEXT_PUBLIC_GITHUB_STREAK_STATS_URL}?user=JanumalaAkhilendra&theme=dark&hide_border=true&type=svg&background=EB545400&ring=FEFE5B&currStreakLabel=FEFE5B`}
             alt="GitHub Streak"
@@ -80,7 +81,7 @@ const AboutDetails = () => {
             target="_blank"
             className="w-full"
           >
-            <img
+            <Image
               className="w-full h-auto"
               src={`${process.env.NEXT_PUBLIC_GITHUB_STATS_URL}/api/pin/?username=JanumalaAkhilendra&repo=QuickBlox-Chat-Room&theme=transparent&hide_border=true&title_color=FEFE5B&text_color=FFFFFF&icon_color=FEFE5B&text_bold=false&description_lines_count=2`}
               alt="JanumalaAkhilendra"
