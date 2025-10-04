@@ -1,4 +1,5 @@
-import { useEffect, useId, useLayoutEffect, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import useScreenSize from './hooks/useScreenSize';
 
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
@@ -22,10 +23,28 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
   const svgRef = useRef(null);
   const rootRef = useRef(null);
   const strokeRef = useRef(null);
+  const screen = useScreenSize();
+  const isMobile = screen && screen < 768;
+  const [prefersReduced, setPrefersReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handler = () => setPrefersReduced(Boolean(mq.matches));
+    handler();
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
 
   const updateAnim = () => {
     const svg = svgRef.current;
     const host = rootRef.current;
+    // If we're on mobile or user prefers reduced motion, skip the heavy SVG animation updates
+    if (isMobile || prefersReduced) return;
     if (!svg || !host) return;
 
     if (strokeRef.current) {
@@ -47,12 +66,13 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
       dxAnims[1].setAttribute('values', `0; -${width}`);
     }
 
-    const baseDur = 6;
-    const dur = Math.max(0.001, baseDur / (speed || 1));
+  const baseDur = 6;
+  const dur = Math.max(0.001, baseDur / (speed || 1));
     [...dyAnims, ...dxAnims].forEach(a => a.setAttribute('dur', `${dur}s`));
 
-    const disp = svg.querySelector('feDisplacementMap');
-    if (disp) disp.setAttribute('scale', String(30 * (chaos || 1)));
+  const disp = svg.querySelector('feDisplacementMap');
+  // reduce displacement on desktop by default to be less GPU heavy
+  if (disp) disp.setAttribute('scale', String(Math.max(4, 10 * (chaos || 1))));
 
     const filterEl = svg.querySelector(`#${CSS.escape(filterId)}`);
     if (filterEl) {
@@ -76,12 +96,14 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
   };
 
   useEffect(() => {
-    updateAnim();
+    // Only run animation setup on non-mobile, non-reduced-motion
+    if (!isMobile && !prefersReduced) updateAnim();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speed, chaos]);
 
   useLayoutEffect(() => {
     if (!rootRef.current) return;
+    if (isMobile || prefersReduced) return; // skip observers on mobile / reduced motion
     const ro = new ResizeObserver(() => updateAnim());
     ro.observe(rootRef.current);
     updateAnim();
@@ -127,6 +149,24 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
     background: `linear-gradient(-30deg, ${hexToRgba(color, 0.8)}, transparent, ${color})`
   };
 
+  // If mobile or user prefers reduced motion, render a lightweight CSS-only border instead
+  if (isMobile || prefersReduced) {
+    return (
+      <div ref={rootRef} className={'relative isolate ' + (className ?? '')} style={style}>
+        <div className="absolute inset-0 pointer-events-none z-10" style={inheritRadius}>
+          <div className="absolute inset-0 box-border" style={strokeStyle} />
+          <div className="absolute inset-0 box-border" style={glow1Style} />
+          <div className="absolute inset-0 box-border" style={glow2Style} />
+          <div className="absolute inset-0" style={bgGlowStyle} />
+        </div>
+
+        <div className="relative" style={inheritRadius}>
+          {children}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div ref={rootRef} className={'relative isolate ' + (className ?? '')} style={style}>
       <svg
@@ -136,25 +176,26 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
         focusable="false"
       >
         <defs>
+          {/* Reduced complexity turbulence for better performance */}
           <filter id={filterId} colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
+            <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="3" result="noise1" seed="1" />
             <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-              <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+              <animate attributeName="dy" values="200; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
             </feOffset>
 
-            <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
+            <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="3" result="noise2" seed="1" />
             <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-              <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
+              <animate attributeName="dy" values="0; -200" dur="6s" repeatCount="indefinite" calcMode="linear" />
             </feOffset>
 
-            <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="2" />
-            <feOffset in="noise1" dx="0" dy="0" result="offsetNoise3">
-              <animate attributeName="dx" values="490; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+            <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="3" result="noise3" seed="2" />
+            <feOffset in="noise3" dx="0" dy="0" result="offsetNoise3">
+              <animate attributeName="dx" values="140; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
             </feOffset>
 
-            <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="2" />
-            <feOffset in="noise2" dx="0" dy="0" result="offsetNoise4">
-              <animate attributeName="dx" values="0; -490" dur="6s" repeatCount="indefinite" calcMode="linear" />
+            <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="3" result="noise4" seed="2" />
+            <feOffset in="noise4" dx="0" dy="0" result="offsetNoise4">
+              <animate attributeName="dx" values="0; -140" dur="6s" repeatCount="indefinite" calcMode="linear" />
             </feOffset>
 
             <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
@@ -163,7 +204,7 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
             <feDisplacementMap
               in="SourceGraphic"
               in2="combinedNoise"
-              scale="30"
+              scale="10"
               xChannelSelector="R"
               yChannelSelector="B"
             />

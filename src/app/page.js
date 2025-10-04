@@ -82,7 +82,8 @@ const SKILLS = [
   { category: "Frontend", skills: ["React", "Next.js", "TypeScript", "Three.js", "Tailwind CSS"] },
   { category: "Backend", skills: ["Node.js", "Python", "Django", "PostgreSQL", "Redis"] },
   { category: "AI/ML", skills: ["Computer Vision", "TensorFlow", "OpenCV", "NLP", "PyTorch"] },
-  { category: "Mobile", skills: ["React Native", "Flutter", "iOS/Android Development"] }
+  { category: "Mobile", skills: ["React Native", "Flutter", "iOS/Android Development"] },
+  { category: "Database", skills: ["MongoDB", "MySQL", "Firebase", "AWS DynamoDB", "Postgres"] },
 ];
 
 // Experience Data (Can be moved to separate JSON file)
@@ -314,7 +315,7 @@ export default function Home() {
                       position={[0, -10, 0]} 
                     />
                     <OrbitControls 
-                      enableZoom={!isMobile}
+                      enableZoom={false}
                       enablePan={!isMobile}
                       maxPolarAngle={Math.PI}
                       minPolarAngle={0}
@@ -329,7 +330,7 @@ export default function Home() {
         {/* Enhanced About Section */}
         <section
           id={SECTION_IDS.ABOUT}
-          className="min-h-screen flex items-center justify-center p-4 sm:p-8 lg:p-20"
+          className="min-h-screen flex items-start justify-start p-4 sm:p-8 lg:p-20"
         >
           <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Skills & Expertise */}
@@ -342,7 +343,7 @@ export default function Home() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {SKILLS.map((skillGroup, index) => (
                       <div key={index} className="space-y-3">
-                        <h3 className="text-cyan-400 font-semibold text-base lg:text-lg">{skillGroup.category}</h3>
+                        <h3 className="text-white font-semibold text-base lg:text-lg">{skillGroup.category}</h3>
                         <div className="flex flex-wrap gap-2">
                           {skillGroup.skills.map((skill, skillIndex) => (
                             <span 
@@ -562,7 +563,7 @@ export default function Home() {
       </footer>
 
       {/* Enhanced Buy Me a Coffee */}
-      <a
+     <a
         href="https://www.buymeacoffee.com/janumalaakr"
         target="_blank"
         rel="noreferrer"
@@ -571,6 +572,10 @@ export default function Home() {
         <Image
           src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
           alt="Buy Me A Coffee"
+          // Provide intrinsic width and height
+          width={217} // Actual intrinsic width of the image
+          height={50} // Actual intrinsic height of the image
+          // Your Tailwind classes will then scale it down while maintaining aspect ratio
           className={`${isMobile ? 'h-8' : 'h-12'} w-auto drop-shadow-lg`}
         />
       </a>

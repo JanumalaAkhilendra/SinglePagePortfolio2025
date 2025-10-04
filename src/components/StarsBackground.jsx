@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Stars, OrbitControls } from "@react-three/drei";
 import { useRef, useState, useEffect } from "react";
+import useScreenSize from "./hooks/useScreenSize";
 import GalaxySwirl from "./GalaxySwirl"; // Import the new component
 
 // Placeholder galaxy swirl textures (replace with your own if desired)
@@ -19,11 +20,13 @@ const getRandom = (min, max) => Math.random() * (max - min) + min;
 export default function StarsBackground() {
   const starsRef = useRef();
   const [swirls, setSwirls] = useState([]);
+  const screen = useScreenSize();
+  const isMobile = screen && screen < 768;
 
   useEffect(() => {
     // Generate a few random swirls
-    const numSwirls = 20; // How many swirls you want
-    const generatedSwirls = Array.from({ length: numSwirls }).map((_, i) => ({
+  const numSwirls = isMobile ? 6 : 20; // fewer swirls on mobile
+  const generatedSwirls = Array.from({ length: numSwirls }).map((_, i) => ({
       key: i,
       position: [getRandom(-200, 200), getRandom(-200, 200), getRandom(-100, 100)],
       rotation: [getRandom(0, Math.PI * 2), getRandom(0, Math.PI * 2), getRandom(0, Math.PI * 2)],
@@ -39,47 +42,48 @@ export default function StarsBackground() {
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900/70 via-purple-900/10 to-blue-900/10" />
 
       <Canvas>
-        <ambientLight intensity={0.25} color="#99ccff" />
-        <pointLight position={[10, 10, 10]} color="#0066ff" intensity={1.5} />
-        <pointLight position={[-10, -10, -10]} color="#ff00aa" intensity={1.5} />
+        <ambientLight intensity={0.2} color="#99ccff" />
+        {!isMobile && <pointLight position={[10, 10, 10]} color="#0066ff" intensity={1.2} />}
+        {!isMobile && <pointLight position={[-10, -10, -10]} color="#ff00aa" intensity={1.2} />}
 
         <group ref={starsRef}>
           <Stars
-            radius={150}
-            depth={60}
-            count={5000}
-            factor={6}
+            radius={isMobile ? 80 : 150}
+            depth={isMobile ? 20 : 60}
+            count={isMobile ? 800 : 5000}
+            factor={isMobile ? 2 : 6}
             saturation={0}
-            fade
-            speed={2}
+            fade={!isMobile}
+            speed={isMobile ? 0.2 : 2}
           >
             <meshStandardMaterial
               color="#ffffff"
               emissive="#4488ff"
-              emissiveIntensity={0.3}
+              emissiveIntensity={isMobile ? 0.1 : 0.3}
               transparent
-              opacity={0.8}
+              opacity={isMobile ? 0.6 : 0.8}
             />
           </Stars>
         </group>
 
-        {/* Render the GalaxySwirl components */}
-        {swirls.map(swirl => (
+        {/* Render the GalaxySwirl components (fewer on mobile) */}
+        {swirls.map((swirl) => (
           <GalaxySwirl
             key={swirl.key}
             position={swirl.position}
             rotation={swirl.rotation}
             scale={swirl.scale}
             textureUrl={swirl.textureUrl}
+            lowQuality={isMobile}
           />
         ))}
 
         <OrbitControls
           enableZoom={false}
-          autoRotate
-          autoRotateSpeed={0.25}
-          enablePan={true}
-          enableRotate={false}
+          autoRotate={!isMobile}
+          autoRotateSpeed={isMobile ? 0 : 0.25}
+          enablePan={!isMobile}
+          enableRotate={!isMobile}
         />
       </Canvas>
     </div>

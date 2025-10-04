@@ -38,16 +38,22 @@ const Sound = () => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [audioLoaded, setAudioLoaded] = useState(false);
 
   // useCallback for stable reference
   const handleFirstUserInteraction = useCallback(() => {
     // Only attempt to play if audioRef.current exists and is not already playing
-    if (audioRef.current && localStorage.getItem("musicConsent") === "true" && !isPlaying) {
-      audioRef.current.play().catch(error => {
-        console.error("Audio playback failed:", error);
-        // Handle cases where play() is rejected (e.g., due to user interaction policy)
-      });
-      setIsPlaying(true);
+    if (localStorage.getItem("musicConsent") === "true" && !isPlaying) {
+      // ensure audio is loaded lazily
+      if (!audioLoaded) {
+        loadAudio();
+      }
+      if (audioRef.current) {
+        audioRef.current.play().catch((error) => {
+          console.error("Audio playback failed:", error);
+        });
+        setIsPlaying(true);
+      }
     }
 
     // Remove listeners after the first interaction attempts to play
@@ -55,13 +61,17 @@ const Sound = () => {
     ["click", "keydown", "touchstart"].forEach((event) =>
       document.removeEventListener(event, handleFirstUserInteraction)
     );
-  }, [isPlaying]); // isPlaying is a dependency as we check !isPlaying
+  }, [isPlaying, audioLoaded]); // include audioLoaded so we know whether to call loadAudio
 
   // useCallback for stable reference
   const toggle = useCallback(() => {
     const newState = !isPlaying;
     setIsPlaying(newState); // Update state first
-    if (audioRef.current) {
+    if (!audioLoaded && newState) {
+      loadAudio().then(() => {
+        audioRef.current && audioRef.current.play().catch(() => {});
+      });
+    } else if (audioRef.current) {
       newState ? audioRef.current.play() : audioRef.current.pause();
     }
     localStorage.setItem("musicConsent", String(newState));
@@ -118,33 +128,56 @@ const Sound = () => {
     }
   }, [isPlaying]); // Dependency: isPlaying
 
+  // Lazy load the audio element/source when needed
+  const loadAudio = async () => {
+    if (audioLoaded) return;
+    // create audio element only when user consents to save initial download and decoding
+    if (!audioRef.current) {
+      const audio = document.createElement("audio");
+      audio.loop = true;
+      audio.preload = "none"; // do not preload to save mobile bandwidth
+      const src = document.createElement("source");
+      src.src = "/audio/space-intro-124261.mp3";
+      src.type = "audio/mpeg";
+      audio.appendChild(src);
+      audioRef.current = audio;
+      // Append but keep it visually hidden
+      audio.style.display = "none";
+      document.body.appendChild(audio);
+      // Attempt to load metadata only
+      try {
+        await audio.load();
+      } catch (e) {
+        // load doesn't return a promise in all browsers; ignore
+      }
+    }
+    setAudioLoaded(true);
+  };
+
   return (
     <div className="fixed top-4 right-2.5 xs:right-4 z-[1000] group">
       {showModal && (
         <Modal onClose={() => setShowModal(false)} toggle={toggle} />
       )}
 
-      <audio ref={audioRef} loop>
-        <source src={"/audio/space-intro-124261.mp3"} type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
+      {/* audio element is created lazily (appended to body) when user consents to save bandwidth */}
       <motion.button
         onClick={toggle}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 1 }}
-        className="w-10 h-10 xs:w-14 xs:h-14 text-foreground rounded-full flex items-center justify-center cursor-pointer z-[1000] p-2.5 xs:p-4 custom-bg"
+        className="w-10 h-10 xs:w-14 xs:h-14 text-white rounded-full flex items-center justify-center cursor-pointer z-[1000] p-2.5 xs:p-4 custom-bg"
         aria-label={"Sound control button"}
         name={"Sound control button"}
       >
         {isPlaying ? (
           <Volume2
-            className="w-full h-full text-foreground group-hover:text-accent"
+            className="w-full h-full text-white group-hover:text-accent"
             strokeWidth={1.5}
           />
         ) : (
           <VolumeX
-            className="w-full h-full text-foreground group-hover:text-accent"
+            className="w-full h-full text-white group-hover:text-accent"
             strokeWidth={1.5}
           />
         )}

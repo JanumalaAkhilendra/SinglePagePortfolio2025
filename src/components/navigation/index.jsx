@@ -35,13 +35,13 @@ const Navigation = ({ handleNavClick }) => {
               key={id}
               onClick={() => handleItemClick(id)}
               // Text size, padding, and hover effects
-              className="group flex items-center space-x-0.5 text-white text-sm sm:text-base font-medium transition-colors hover:text-cyan-400 focus:outline-none"
+              className="group flex items-center space-x-0.5 text-white text-sm sm:text-base font-medium transition-colors hover:text-white-500 focus:outline-none"
             >
               {/* Icon - Always visible, slightly smaller on mobile */}
-              <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:-translate-y-[1px]" strokeWidth={1.5} />
+              <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 lg:hidden group-hover:-translate-y-[1px]" strokeWidth={1.5} />
               
               {/* Label - Condensed on smaller mobile screens, full text on larger screens */}
-              <span className="hidden xs:inline">{label}</span>
+              <span className="hidden xs:inline text-cyan-300 font-stardock">{label.toUpperCase()}</span>
             </button>
           ))}
         </div>
