@@ -5,7 +5,7 @@ import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ChevronDown, Mail, MapPin, ExternalLink, Calendar, Rocket, Satellite, Cpu } from "lucide-react";
 import { OrbitControls } from '@react-three/drei';
-
+import Lottie from "lottie-react";
 // Components
 import StarsBackground from "@/components/StarsBackground";
 import SpaceButton from "@/components/SpaceButton";
@@ -15,6 +15,7 @@ import Loader from "@/components/Loader/Loader";
 import ElectricBorder from "@/components/ElectricBorder"; 
 import CircularGallery from "@/components/CircularGallery"; 
 import ExperienceTimeline from "@/components/ExperienceTimeline"; // New component
+import { motion } from "framer-motion";
 
 // Constants
 const SOCIAL_LINKS = [
@@ -35,48 +36,91 @@ const SECTION_IDS = {
 
 const PROJECT_DATA = [
   { 
-    image: '/project_images/copilot.png', 
-    text: 'Space Station Portal', 
+    image: '/project_images/inscripts.png', 
+    text: 'Inscripts Ai SpreadSheet', 
     category: 'react',
-    description: 'Advanced React-based portal with real-time data visualization',
-    tech: ['React', 'Three.js', 'WebGL']
+    description: 'Inscripts Frontend Task using React-table',
+    tech: ['react', 'Javascript', 'react tables', 'TypeScript']
   },
   { 
     image: '/project_images/artisthub.png', 
-    text: 'AI Vision System', 
-    category: 'ai',
-    description: 'Computer vision platform for artistic style analysis and transfer',
-    tech: ['Python', 'OpenCV', 'TensorFlow']
+    text: 'ArtistHub', 
+    category: 'react',
+    description: 'Reddit App Clone with reddit Api',
+    tech: ['react', 'Javascript', 'recharts', 'TypeScript']
   },
   { 
     image: '/project_images/creatiport.png', 
-    text: 'E-commerce Backend', 
-    category: 'django',
-    description: 'Scalable Django REST API with payment integration',
-    tech: ['Django', 'PostgreSQL', 'Redis']
+    text: 'Creati-Port Ui', 
+    category: 'react',
+    description: 'EventFul-India Frontend Task',
+    tech: ['react', 'Javascript', 'recharts', 'TypeScript']
   },
   { 
     image: '/project_images/digilabs.png', 
-    text: 'Cross-Platform Mobile App', 
-    category: 'react-native',
-    description: 'Mobile application for digital laboratory management',
-    tech: ['React Native', 'Firebase', 'Redux']
+    text: 'Digi Labs Notification App', 
+    category: 'react',
+    description: 'A Streaming Platform clone with React and Firebase',
+    tech: ['Framer-motion', 'charts.js', 'Typescript', 'Responsive']
   },
   { 
-    image: '/project_images/inscripts.png', 
-    text: 'Blockchain Explorer', 
+    image: '/project_images/Skill-dashboard.png', 
+    text: 'Skill Analytics DashBoard', 
     category: 'react',
-    description: 'Real-time blockchain transaction visualization dashboard',
-    tech: ['React', 'Web3.js', 'Node.js']
+    description: 'A Demo DashBoard Built using React.js inspired from Figma Design',
+    tech: ['react', 'Javascript', 'recharts', 'TypeScript']
+  },
+  { 
+    image: '/project_images/redditclone.png', 
+    text: 'Reddit App Clone', 
+    category: 'react',
+    description: 'Reddit App Clone with reddit Api',
+    tech: ['react', 'Javascript', 'recharts', 'TypeScript']
+  },
+  { 
+    image: '/project_images/optacloud.png', 
+    text: 'OptaCloud Location Delivery App', 
+    category: 'react',
+    description: 'A Streaming Platform clone with React and Firebase',
+    tech: ['Vite', 'Express', 'Mongoose', 'Javascript']
+  },
+  { 
+    image: '/project_images/node-dashboard.png', 
+    text: 'Node-DashBoard', 
+    category: 'react',
+    description: 'A Demo DashBoard Built using React.js and Typescript inspired from Figma Design',
+    tech: ['Javascript', 'Next.js', 'Chart.js', 'TypeScript']
+  },
+  { 
+    image: '/project_images/copilot.png', 
+    text: 'Copilotkit-weather-bot', 
+    category: 'react',
+    description: 'A Multipurpose Weather Bot built with React and AI integrations',
+    tech: ['AI', 'Next.js', 'OpenAI', 'Real-time']
   },
   { 
     image: '/project_images/Uifry.png', 
-    text: 'NLP Sentiment Analysis', 
+    text: 'Ui-Fry', 
+    category: 'react',
+    description: 'A Figma Design Frontend made using React task by UiFry',
+    tech: ['Vite', 'javascript', 'Css', 'Html']
+  },
+  { 
+    image: '/project_images/quickblox.png', 
+    text: 'QuickBlox Chat Room', 
+    category: 'react-native',
+    description: 'Real-time chat application with React Native',
+    tech: ['WebRTC', 'Messaging', 'Push Notifications']
+  },
+  { 
+    image: '/project_images/copilot.png', 
+    text: 'Copilotkit-weather-bot', 
     category: 'ai',
-    description: 'Natural language processing for market sentiment analysis',
-    tech: ['Python', 'NLTK', 'Transformers']
+    description: 'AI-powered weather assistant with natural language processing',
+    tech: ['LLM', 'NLP', 'GPT', 'Conversational AI']
   },
 ];
+
 
 const SKILLS = [
   { category: "Frontend", skills: ["React", "Next.js", "TypeScript", "Three.js", "Tailwind CSS"] },
@@ -244,21 +288,6 @@ export default function Home() {
             <div className="pointer-events-auto">
               <Navigation handleNavClick={handleNavClick} />
             </div>
-            
-            {/* Enhanced Social Links - Responsive */}
-            {/* <div className={`absolute right-0 lg:right-24 mx-auto flex flex-col lg:flex-row items-end lg:items-center justify-center lg:justify-end gap-3 px-2 lg:px-4 py-4 mt-20 lg:mt-2 pointer-events-auto ${
-              isMobile ? 'top-4 right-2' : 'top-auto'
-            }`}>
-              {SOCIAL_LINKS.map((link) => (
-                <SpaceButton
-                  key={link.label}
-                  label={isMobile ? link.icon : link.label}
-                  ImageSrc="/spacebuttoncircle.jpg"
-                  href={link.href}
-                  className={isMobile ? "text-xs px-2 py-1" : ""}
-                />
-              ))}
-            </div> */}
           </div>
         )}
 
@@ -267,30 +296,62 @@ export default function Home() {
           id={SECTION_IDS.HERO}
           className="min-h-screen pt-2 lg:pt-20 flex flex-col items-center text-white relative overflow-hidden"
         >
-          <div className="max-w-7xl mx-auto w-full h-full flex flex-col lg:flex-row items-center justify-between px-4 sm:px-8 pt-20 z-20">
-            <div className={`w-full ${isMobile ? 'text-center' : 'lg:w-1/2 text-left'} space-y-4 lg:space-y-6 mb-8 lg:mb-0`}>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                JANUMALA AKHILENDRA
-              </h1>
-              <p className="text-lg sm:text-xl lg:text-2xl text-cyan-400 font-light">
-                Full-Stack Developer | Computer Vision Specialist | AI Innovator
-              </p>
-              <p className="text-gray-300 text-base lg:text-lg max-w-2xl">
-                Crafting digital experiences at the intersection of cutting-edge web technologies 
-                and artificial intelligence.
-              </p>
-              <button
-                className="flex flex-row items-center text-cyan-400 hover:text-white transition-all duration-300 group pt-4"
-                onClick={() => handleNavClick(SECTION_IDS.ABOUT)}
-              >
-                <span className="text-base lg:text-lg mr-2 group-hover:translate-y-1 transition-transform">
-                  Explore My Universe
-                </span>
-                <ChevronDown className="w-6 h-6 lg:w-8 lg:h-8 animate-bounce group-hover:animate-pulse" />
-              </button>
-            </div>
+        <div className="max-w-7xl mx-auto w-full h-full flex flex-col lg:flex-row items-center justify-between px-4 sm:px-8 pt-20 z-20">
 
-            {/* Enhanced 3D Canvas - Responsive Positioning */}
+          {/* Text Section */}
+          <div className={`w-full ${isMobile ? 'text-center' : 'lg:w-1/2 text-left'} space-y-4 lg:space-y-6 mb-8 lg:mb-0`}>
+
+            {/* Animated Name */}
+            <motion.h1
+              initial={{ y: -50, opacity: 0, scale: 0.8 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent hover:scale-105 hover:tracking-wider transition-all duration-500"
+            >
+              <div className="relative inline-block">
+                  <h1 className="text-7xl font-extrabold relative z-10 bg-[url('../../public/background/S2.avif')] bg-cover bg-center bg-clip-text text-transparent filter drop-shadow-lg">
+                    JANUMALA AKHILENDRA
+                  </h1>
+              </div>
+            </motion.h1>
+
+            {/* Role / Subtitle */}
+            <motion.p
+              initial={{ x: -30, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-lg sm:text-xl lg:text-2xl text-cyan-400 font-light hover:text-white transition-colors duration-300"
+            >
+              Full-Stack Developer | Computer Vision Specialist | AI Innovator
+            </motion.p>
+
+            {/* Description */}
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="text-gray-300 text-base lg:text-lg max-w-2xl hover:text-cyan-200 transition-colors duration-300"
+            >
+              Crafting digital experiences at the intersection of cutting-edge web technologies 
+              and artificial intelligence.
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.button
+              whileHover={{ scale: 1.05, translateY: -2, backgroundColor: "#00FFFF", color: "#000" }}
+              whileTap={{ scale: 0.95 }}
+              className="flex flex-row items-center text-cyan-400 hover:text-white transition-all duration-300 group pt-4"
+              onClick={() => handleNavClick(SECTION_IDS.ABOUT)}
+            >
+              <span className="text-base lg:text-lg mr-2 group-hover:translate-y-1 transition-transform">
+                Explore My Universe
+              </span>
+              <ChevronDown className="w-6 h-6 lg:w-8 lg:h-8 animate-bounce group-hover:animate-pulse" />
+            </motion.button>
+
+          </div>
+
+            {/* 3D Canvas */}
             <div className={`relative z-40 ${
               isMobile ? 'w-full h-64 mt-3' : 
               isTablet ? 'w-1/2 h-80' : 
@@ -325,6 +386,7 @@ export default function Home() {
               </Suspense>
             </div>
           </div>
+
         </section>
 
         {/* Enhanced About Section */}

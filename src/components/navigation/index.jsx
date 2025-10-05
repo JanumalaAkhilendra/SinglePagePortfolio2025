@@ -22,7 +22,7 @@ const Navigation = ({ handleNavClick }) => {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <div
-          className="text-white text-lg sm:text-xl lg:text-2xl font-bold cursor-pointer transition-colors hover:text-cyan-400 font-stardock"
+          className="text-white text-lg sm:text-xl lg:text-xl font-bold cursor-pointer transition-colors hover:text-cyan-400 font-stardock"
           onClick={() => handleItemClick("hero")}
         >
           AKHILENDRA J.
@@ -34,7 +34,7 @@ const Navigation = ({ handleNavClick }) => {
             <button
               key={id}
               onClick={() => handleItemClick(id)}
-              className="relative text-cyan-300 font-stardock text-sm sm:text-base transition-all hover:text-cyan-400"
+              className="relative text-cyan-300 font-stardock text-xs sm:text-base lg:text-sm transition-all hover:text-cyan-400"
             >
               {label.toUpperCase()}
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>

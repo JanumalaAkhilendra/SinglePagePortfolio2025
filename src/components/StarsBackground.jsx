@@ -25,7 +25,7 @@ export default function StarsBackground() {
 
   useEffect(() => {
     // Generate a few random swirls
-  const numSwirls = isMobile ? 6 : 20; // fewer swirls on mobile
+  const numSwirls = isMobile ? 10 : 25; // fewer swirls on mobile
   const generatedSwirls = Array.from({ length: numSwirls }).map((_, i) => ({
       key: i,
       position: [getRandom(-200, 200), getRandom(-200, 200), getRandom(-100, 100)],

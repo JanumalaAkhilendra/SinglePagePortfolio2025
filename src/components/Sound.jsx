@@ -10,19 +10,23 @@ const Modal = ({ onClose, toggle }) => {
     <div className="fixed inset-0 bg-background/20 backdrop-blur-sm flex items-center justify-center z-[1000]">
       <div
         className="bg-background/60 border border-accent/30 border-solid backdrop-blur-[6px]
-                   py-8 px-6 xs:px-10 sm:px-16 rounded shadow-glass-inset text-center space-y-8"
+                   py-8 px-6 xs:px-10 sm:px-16 rounded shadow-glass-inset text-center space-y-8 text-white"
       >
-        <p className="font-light">Do you like to play the background music?</p>
+        <p className="font-light text-lg sm:text-xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+          Do you like to play the background music?
+        </p>
         <div className="flex items-center justify-center space-x-4">
           <button
             onClick={toggle}
-            className="px-4 py-2 border border-accent/30 border-solid hover:shadow-glass-sm rounded mr-2"
+            className="px-4 py-2 border border-accent/30 border-solid hover:shadow-glass-sm 
+                       rounded mr-2 text-cyan-300 hover:text-white transition-all duration-300"
           >
             Yes
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-accent/30 border-solid hover:shadow-glass-sm rounded"
+            className="px-4 py-2 border border-accent/30 border-solid hover:shadow-glass-sm 
+                       rounded text-cyan-300 hover:text-white transition-all duration-300"
           >
             No
           </button>
@@ -32,6 +36,7 @@ const Modal = ({ onClose, toggle }) => {
     document.getElementById("my-modal")
   );
 };
+
 
 const Sound = () => {
   const audioRef = useRef(null);
