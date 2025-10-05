@@ -302,18 +302,17 @@ export default function Home() {
           <div className={`w-full ${isMobile ? 'text-center' : 'lg:w-1/2 text-left'} space-y-4 lg:space-y-6 mb-8 lg:mb-0`}>
 
             {/* Animated Name */}
-            <motion.h1
-              initial={{ y: -50, opacity: 0, scale: 0.8 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent hover:scale-105 hover:tracking-wider transition-all duration-500"
-            >
-              <div className="relative inline-block">
-                  <h1 className="text-7xl font-extrabold relative z-10 bg-[url('../../public/background/S2.avif')] bg-cover bg-center bg-clip-text text-transparent filter drop-shadow-lg">
-                    JANUMALA AKHILENDRA
-                  </h1>
-              </div>
-            </motion.h1>
+           <motion.h1
+            initial={{ y: -50, opacity: 0, scale: 0.8 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="relative font-extrabold leading-tight text-transparent bg-clip-text bg-[url('/background/S2.avif')] bg-cover bg-center filter drop-shadow-lg
+                      text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
+                      transition-all duration-500 hover:scale-105 hover:tracking-wider"
+          >
+            JANUMALA AKHILENDRA
+          </motion.h1>
+
 
             {/* Role / Subtitle */}
             <motion.p
