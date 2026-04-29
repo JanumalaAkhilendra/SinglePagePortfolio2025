@@ -24,11 +24,11 @@ export default function SpaceStationModel({ scale = 1, activeSection }) {
     scene.position.sub(center);
 
     // Normalize scale (optional but recommended)
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const desiredSize = 3; // tweak if needed
-    const scaleFactor = desiredSize / maxDim;
+    // const maxDim = Math.max(size.x, size.y, size.z);
+    // const desiredSize = 3; // tweak if needed
+    // const scaleFactor = desiredSize / maxDim;
 
-    scene.scale.setScalar(scaleFactor * scale);
+    scene.scale.setScalar(scale);
 
   }, [scene, scale]);
 

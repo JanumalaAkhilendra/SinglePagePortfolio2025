@@ -359,18 +359,19 @@ export default function Home() {
               <Suspense fallback={<Loader />}>
                 <CanvasWrapper>
                   <Canvas 
-                    camera={{ 
-                      position: isMobile ? [3, 1, 5] : [5, 2, 8], 
-                      fov: isMobile ? 50 : 40, 
+                    camera={{                  
+                      position: isMobile ? [2, 1, 4] : [4, 2, 7], 
+                      fov: isMobile ? 55 : 45,
                       near: 0.1, 
-                      far: 1000 
+                      far: 1000
                     }}
                   >
                     <ambientLight intensity={0.8} />
                     <directionalLight position={[5, 5, 5]} intensity={1.5} />
                     <pointLight position={[-10, -10, -10]} intensity={0.5} />
                     <SpaceStationModel 
-                      scale={1} 
+                      scale={1}
+                      enablePan={false}
                       activeSection={activeSection}  
                     />
                     <OrbitControls 
