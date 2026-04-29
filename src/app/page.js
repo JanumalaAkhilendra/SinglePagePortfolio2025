@@ -354,13 +354,13 @@ export default function Home() {
             <div className={`relative z-40 ${
               isMobile ? 'w-full h-64 mt-3' : 
               isTablet ? 'w-1/2 h-80' : 
-              'w-1/2 h-[500px] lg:h-[600px]'
+              'w-full lg:w-1/2 h-[60vh]'
             }`}>
               <Suspense fallback={<Loader />}>
                 <CanvasWrapper>
                   <Canvas 
                     camera={{ 
-                      position: isMobile ? [2.5, 0, 0] : [10, 0, 0], 
+                      position: isMobile ? [3, 1, 5] : [5, 2, 8], 
                       fov: isMobile ? 50 : 40, 
                       near: 0.1, 
                       far: 1000 
@@ -370,9 +370,8 @@ export default function Home() {
                     <directionalLight position={[5, 5, 5]} intensity={1.5} />
                     <pointLight position={[-10, -10, -10]} intensity={0.5} />
                     <SpaceStationModel 
-                      scale={modelScale} 
-                      activeSection={activeSection} 
-                      position={[0, -10, 0]} 
+                      scale={1} 
+                      activeSection={activeSection}  
                     />
                     <OrbitControls 
                       enableZoom={false}

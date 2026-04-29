@@ -1,48 +1,57 @@
-// src/components/models/SpaceStationModel.jsx (Modified)
+// src/components/models/SpaceStationModel.jsx
 
 import React, { useEffect } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
-import * as THREE from 'three'; 
-
+import * as THREE from 'three';
 
 // Make sure your model path is correct
-const MODEL_PATH = './models/space_station_3_low.glb'; // Adjust this path
-export default function SpaceStationModel({ scale, activeSection }) {
-    // 1. Load the model and its scene graph, as well as any animation clips
-    const { scene, animations } = useGLTF(MODEL_PATH);
+const MODEL_PATH = './models/space_station_3_low.glb';
 
-    // 2. Access the animation actions
-    // This hook automatically links the animations to the scene
-    const { actions } = useAnimations(animations, scene);
-    
-    // 3. Effect to play the animation when the component mounts
-    useEffect(() => {
-        // Check if there are animations and if the first one exists
-        if (animations && animations.length > 0) {
-            
-            // Assuming the loop or movement animation is the first clip (index 0)
-            const action = actions[animations[0].name];
-            
-            if (action) {
-                // Set the animation to seamlessly loop
-                action.loop = THREE.LoopRepeat; 
-                
-                // Set the animation's fading transition (optional, but smoother)
-                action.reset().fadeIn(0.5).play();
-            }
+export default function SpaceStationModel({ scale = 1, activeSection }) {
+  const { scene, animations } = useGLTF(MODEL_PATH);
+  const { actions } = useAnimations(animations, scene);
+
+  // 🔥 1. Auto-center + normalize model (MOST IMPORTANT FIX)
+  useEffect(() => {
+    if (!scene) return;
+
+    // Compute bounding box
+    const box = new THREE.Box3().setFromObject(scene);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+
+    // Center the model
+    scene.position.sub(center);
+
+    // Normalize scale (optional but recommended)
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const desiredSize = 3; // tweak if needed
+    const scaleFactor = desiredSize / maxDim;
+
+    scene.scale.setScalar(scaleFactor * scale);
+
+  }, [scene, scale]);
+
+  // 🔥 2. Animation handling (your original logic, cleaned)
+  useEffect(() => {
+    if (animations && animations.length > 0) {
+      const action = actions[animations[0].name];
+
+      if (action) {
+        action.loop = THREE.LoopRepeat;
+        action.reset().fadeIn(0.5).play();
+      }
+    }
+
+    return () => {
+      if (animations && animations.length > 0) {
+        const action = actions[animations[0].name];
+        if (action) {
+          action.fadeOut(0.5).stop();
         }
-        
-        // Cleanup function to stop the animation when the component unmounts
-        return () => {
-            if (animations && animations.length > 0) {
-                const action = actions[animations[0].name];
-                if (action) {
-                    action.fadeOut(0.5).stop();
-                }
-            }
-        };
-    }, [actions, animations]); // Re-run if actions or animations change
+      }
+    };
+  }, [actions, animations]);
 
-    // Use the loaded scene for rendering
-    return <primitive object={scene} scale={scale} />;
+  return <primitive object={scene} />;
 }
